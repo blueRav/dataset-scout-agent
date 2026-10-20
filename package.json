@@ -1,0 +1,17 @@
+{
+  "name": "dataset-scout-agent",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Plan a small regression experiment while enforcing leakage and holdout boundaries.",
+  "author": "Antoine Morales",
+  "license": "MIT",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test",
+    "demo": "node src/cli.mjs",
+    "live": "node --env-file=.env src/cli.mjs --live"
+  }
+}
