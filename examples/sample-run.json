@@ -1,0 +1,368 @@
+{
+  "mode": "deterministic",
+  "pendingBeforeApproval": null,
+  "state": {
+    "version": 1,
+    "runId": "sample-dataset-scout-agent",
+    "goal": "Analyze campaign spend versus units while preventing target leakage and test-set-driven model selection.",
+    "status": "complete",
+    "steps": 7,
+    "toolCalls": 6,
+    "tokens": 0,
+    "observations": [
+      {
+        "tool": "profile_data",
+        "args": {},
+        "ok": true,
+        "result": {
+          "rows": 30,
+          "target": "units",
+          "allowedFeatures": [
+            "campaign_spend"
+          ],
+          "forbiddenFeatures": [
+            "future_revenue"
+          ],
+          "missingCampaignSpend": 3,
+          "split": {
+            "train": 18,
+            "validation": 6,
+            "test": 6
+          },
+          "warning": "future_revenue is measured after the target and would leak the outcome"
+        }
+      },
+      {
+        "tool": "fit_model",
+        "args": {
+          "type": "mean",
+          "feature": "campaign_spend"
+        },
+        "ok": true,
+        "result": {
+          "type": "mean",
+          "trainedOn": 18,
+          "imputationMean": 27.75,
+          "validationMse": 1696.7566666666671
+        }
+      },
+      {
+        "tool": "fit_model",
+        "args": {
+          "type": "linear",
+          "feature": "campaign_spend"
+        },
+        "ok": true,
+        "result": {
+          "type": "linear",
+          "trainedOn": 18,
+          "imputationMean": 27.75,
+          "validationMse": 368.2240092092984
+        }
+      },
+      {
+        "tool": "select_model",
+        "args": {},
+        "ok": true,
+        "result": {
+          "selected": "linear",
+          "validationMse": 368.2240092092984
+        }
+      },
+      {
+        "tool": "evaluate_test",
+        "args": {},
+        "ok": true,
+        "result": {
+          "model": "linear",
+          "mse": 2.74612453302781,
+          "rows": 6
+        }
+      },
+      {
+        "tool": "submit_report",
+        "args": {},
+        "ok": true,
+        "result": {
+          "selected": "linear",
+          "validation": [
+            {
+              "model": "mean",
+              "mse": 1696.7566666666671
+            },
+            {
+              "model": "linear",
+              "mse": 368.2240092092984
+            }
+          ],
+          "test": {
+            "model": "linear",
+            "mse": 2.74612453302781,
+            "rows": 6
+          },
+          "trainingRows": 18,
+          "controls": [
+            "chronological 60/20/20 split",
+            "training-only mean imputation",
+            "post-outcome feature blocked",
+            "selection frozen before test"
+          ],
+          "limitations": [
+            "Small synthetic dataset",
+            "No causal claims",
+            "Uncertainty intervals are not estimated"
+          ]
+        }
+      }
+    ],
+    "trace": [
+      {
+        "index": 0,
+        "event": "tool_requested",
+        "name": "profile_data",
+        "args": {}
+      },
+      {
+        "index": 1,
+        "event": "tool_result",
+        "name": "profile_data",
+        "args": {},
+        "result": {
+          "rows": 30,
+          "target": "units",
+          "allowedFeatures": [
+            "campaign_spend"
+          ],
+          "forbiddenFeatures": [
+            "future_revenue"
+          ],
+          "missingCampaignSpend": 3,
+          "split": {
+            "train": 18,
+            "validation": 6,
+            "test": 6
+          },
+          "warning": "future_revenue is measured after the target and would leak the outcome"
+        },
+        "reviewer": null
+      },
+      {
+        "index": 2,
+        "event": "tool_requested",
+        "name": "fit_model",
+        "args": {
+          "type": "mean",
+          "feature": "campaign_spend"
+        }
+      },
+      {
+        "index": 3,
+        "event": "tool_result",
+        "name": "fit_model",
+        "args": {
+          "type": "mean",
+          "feature": "campaign_spend"
+        },
+        "result": {
+          "type": "mean",
+          "trainedOn": 18,
+          "imputationMean": 27.75,
+          "validationMse": 1696.7566666666671
+        },
+        "reviewer": null
+      },
+      {
+        "index": 4,
+        "event": "tool_requested",
+        "name": "fit_model",
+        "args": {
+          "type": "linear",
+          "feature": "campaign_spend"
+        }
+      },
+      {
+        "index": 5,
+        "event": "tool_result",
+        "name": "fit_model",
+        "args": {
+          "type": "linear",
+          "feature": "campaign_spend"
+        },
+        "result": {
+          "type": "linear",
+          "trainedOn": 18,
+          "imputationMean": 27.75,
+          "validationMse": 368.2240092092984
+        },
+        "reviewer": null
+      },
+      {
+        "index": 6,
+        "event": "tool_requested",
+        "name": "select_model",
+        "args": {}
+      },
+      {
+        "index": 7,
+        "event": "tool_result",
+        "name": "select_model",
+        "args": {},
+        "result": {
+          "selected": "linear",
+          "validationMse": 368.2240092092984
+        },
+        "reviewer": null
+      },
+      {
+        "index": 8,
+        "event": "tool_requested",
+        "name": "evaluate_test",
+        "args": {}
+      },
+      {
+        "index": 9,
+        "event": "tool_result",
+        "name": "evaluate_test",
+        "args": {},
+        "result": {
+          "model": "linear",
+          "mse": 2.74612453302781,
+          "rows": 6
+        },
+        "reviewer": null
+      },
+      {
+        "index": 10,
+        "event": "tool_requested",
+        "name": "submit_report",
+        "args": {}
+      },
+      {
+        "index": 11,
+        "event": "tool_result",
+        "name": "submit_report",
+        "args": {},
+        "result": {
+          "selected": "linear",
+          "validation": [
+            {
+              "model": "mean",
+              "mse": 1696.7566666666671
+            },
+            {
+              "model": "linear",
+              "mse": 368.2240092092984
+            }
+          ],
+          "test": {
+            "model": "linear",
+            "mse": 2.74612453302781,
+            "rows": 6
+          },
+          "trainingRows": 18,
+          "controls": [
+            "chronological 60/20/20 split",
+            "training-only mean imputation",
+            "post-outcome feature blocked",
+            "selection frozen before test"
+          ],
+          "limitations": [
+            "Small synthetic dataset",
+            "No causal claims",
+            "Uncertainty intervals are not estimated"
+          ]
+        },
+        "reviewer": null
+      },
+      {
+        "index": 12,
+        "event": "completed"
+      }
+    ],
+    "receipts": {
+      "{\"args\":{\"feature\":\"campaign_spend\",\"type\":\"mean\"},\"name\":\"fit_model\"}": {
+        "type": "mean",
+        "trainedOn": 18,
+        "imputationMean": 27.75,
+        "validationMse": 1696.7566666666671
+      },
+      "{\"args\":{\"feature\":\"campaign_spend\",\"type\":\"linear\"},\"name\":\"fit_model\"}": {
+        "type": "linear",
+        "trainedOn": 18,
+        "imputationMean": 27.75,
+        "validationMse": 368.2240092092984
+      },
+      "{\"args\":{},\"name\":\"select_model\"}": {
+        "selected": "linear",
+        "validationMse": 368.2240092092984
+      },
+      "{\"args\":{},\"name\":\"evaluate_test\"}": {
+        "model": "linear",
+        "mse": 2.74612453302781,
+        "rows": 6
+      },
+      "{\"args\":{},\"name\":\"submit_report\"}": {
+        "selected": "linear",
+        "validation": [
+          {
+            "model": "mean",
+            "mse": 1696.7566666666671
+          },
+          {
+            "model": "linear",
+            "mse": 368.2240092092984
+          }
+        ],
+        "test": {
+          "model": "linear",
+          "mse": 2.74612453302781,
+          "rows": 6
+        },
+        "trainingRows": 18,
+        "controls": [
+          "chronological 60/20/20 split",
+          "training-only mean imputation",
+          "post-outcome feature blocked",
+          "selection frozen before test"
+        ],
+        "limitations": [
+          "Small synthetic dataset",
+          "No causal claims",
+          "Uncertainty intervals are not estimated"
+        ]
+      }
+    },
+    "pending": null,
+    "answer": "Selected linear using validation data; held-out MSE 2.746. See the submitted report for limitations."
+  },
+  "result": {
+    "selected": "linear",
+    "validation": [
+      {
+        "model": "mean",
+        "mse": 1696.7566666666671
+      },
+      {
+        "model": "linear",
+        "mse": 368.2240092092984
+      }
+    ],
+    "test": {
+      "model": "linear",
+      "mse": 2.74612453302781,
+      "rows": 6
+    },
+    "trainingRows": 18,
+    "controls": [
+      "chronological 60/20/20 split",
+      "training-only mean imputation",
+      "post-outcome feature blocked",
+      "selection frozen before test"
+    ],
+    "limitations": [
+      "Small synthetic dataset",
+      "No causal claims",
+      "Uncertainty intervals are not estimated"
+    ]
+  }
+}
